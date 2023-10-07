@@ -1,17 +1,23 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/components/fire_alert.dart';
 import 'package:location/location.dart';
 import 'components/position.dart';
 
-void main() {
-  runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const Kazaton());
 }
 
-class MyApp extends StatefulWidget {
+class Kazaton extends StatefulWidget {
+  const Kazaton({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<Kazaton> createState() => _KazatonState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _KazatonState extends State<Kazaton> {
   final PositionHelper _positionHelper = PositionHelper();
   LocationData? _locationData;
 
@@ -20,7 +26,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Location Example'),
+          title: const Text('Location Example'),
         ),
         body: Center(
           child: Column(
@@ -33,8 +39,9 @@ class _MyAppState extends State<MyApp> {
               ),
               ElevatedButton(
                 onPressed: _getLocation,
-                child: Text('Get Location'),
+                child: const Text('Get Location'),
               ),
+              const FireAlert()
             ],
           ),
         ),
