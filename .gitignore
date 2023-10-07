@@ -1,0 +1,69 @@
+# Flutter related
+**/ios/Flutter/.last_build_id
+**/flutter_export_environment.sh
+**/android/app/debug.keystore
+**/android/app/google-services.json
+**/android/key.properties
+*.lock
+.Packages
+!.gitignore
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Flutter/Dart related for web projects
+flutter_service_worker.js
+
+# iOS related
+**/ios/.generated/
+**/ios/Runner.xcworkspace/xcuserdata/
+**/ios/Runner.xcworkspace/xcshareddata/
+**/ios/Runner.xcodeproj/xcuserdata/
+**/ios/Runner.xcodeproj/project.xcworkspace/xcuserdata/
+**/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/
+**/ios/Runner.xcodeproj/project.pbxproj.orig
+**/ios/Pods/
+
+# Android related
+**/android/.gradle/
+**/android/.idea/
+**/android/.idea/libraries/
+**/android/.idea/modules.xml
+**/android/build/
+**/android/*/*/build/
+**/android/*/*/output.json
+**/android/app/build/
+
+# Django related
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+
+# Environment files
+.env
+*.env
+
+# Database
+*.sqlite3
+*.sqlite3-journal
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs (IntelliJ, PyCharm, etc.)
+.idea/
+
+# macOS
+.DS_Store
+
+# Others
+*.swp
+*.swo
+*.swn
+*.bak
