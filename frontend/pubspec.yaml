@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   location: ^5.0.3
+  flutter_local_notifications: ^16.1.0
 
 dev_dependencies:
   flutter_test:
