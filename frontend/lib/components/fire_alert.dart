@@ -1,73 +1,45 @@
-// fire_alert.dart
-
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class FireAlert extends StatefulWidget {
-  const FireAlert({super.key});
+class FireNotificationWidget extends StatefulWidget {
+  const FireNotificationWidget({Key? key}) : super(key: key);
 
   @override
-  State<FireAlert> createState() => _FireAlertState();
+  State<FireNotificationWidget> createState() => _FireNotificationWidgetState();
 }
 
-class _FireAlertState extends State<FireAlert> {
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-  String? _message = 'Ожидание уведомлений...';
-
+class _FireNotificationWidgetState extends State<FireNotificationWidget> {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   @override
   void initState() {
     super.initState();
-    _initializeFirebase();
-    _setFirebaseListeners();
+    var initializationSettingsAndroid =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  _initializeFirebase() async {
-    await Firebase.initializeApp();
-    await _fcm.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
+  Future<void> sendNotification() async {
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+        'fire_channel', 'Fire Notifications',
+        priority: Priority.high);
+    var platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'ПОЖАР',
+      'Пожар обнаружен в радиусе 2км от вас',
+      platformChannelSpecifics,
     );
-  }
-
-  void _simulateNotification() {
-    setState(() {
-      _message = 'Имитация уведомления о пожаре: Пожар обнаружен в вашем районе!';
-    });
-  }
-
-  _setFirebaseListeners() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      setState(() {
-        _message = message.notification?.body ?? 'Received an empty notification.';
-      });
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      setState(() {
-        _message = message.notification?.body ?? 'Clicked on an empty notification.';
-      });
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Text(
-            _message!,
-            style: const TextStyle(fontSize: 16.0),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        ElevatedButton(
-          child: Text('Имитировать уведомление'),
-          onPressed: _simulateNotification,
-        ),
-      ],
+    return ElevatedButton(
+      onPressed: sendNotification,
+      child: const Text("Отправить уведомление о пожаре"),
     );
   }
 }
