@@ -19,3 +19,13 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/faq_icon.png
+    - assets/fire_icon.png
+    - assets/stats_icon.png
+    - assets/recent_wildfires.png
+    - assets/hectares_burned.png
+  fonts:
+    - family: Dela Gothic One,
+      fonts:
+        - asset: assets/fonts/DelaGothicOne-Regular.ttf

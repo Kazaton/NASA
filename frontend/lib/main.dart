@@ -1,53 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/fire_alert.dart';
-import 'package:location/location.dart';
-import 'components/position.dart';
+import 'package:frontend/screens/homepage.dart';
+import 'package:frontend/screens/faq.dart';
+import 'package:frontend/screens/save/mvp.dart';
 
-Future<void> main() async {
-  runApp(const Kazaton());
+void main() {
+  runApp(MyApp());
 }
 
-class Kazaton extends StatefulWidget {
-  const Kazaton({super.key});
-
-  @override
-  State<Kazaton> createState() => _KazatonState();
-}
-
-class _KazatonState extends State<Kazaton> {
-  final PositionHelper _positionHelper = PositionHelper();
-  LocationData? _locationData;
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Location Example'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _locationData != null
-                    ? 'Location: ${_locationData!.latitude}, ${_locationData!.longitude}'
-                    : 'Press the button to get location',
-              ),
-              ElevatedButton(
-                onPressed: _getLocation,
-                child: const Text('Get Location'),
-              ),
-              const FireNotificationWidget(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  _getLocation() async {
-    _locationData = await _positionHelper.getLocation();
-    setState(() {});
+    return MaterialApp(home: HomepageScreen());
   }
 }
