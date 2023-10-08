@@ -1,145 +1,119 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/constants/urls.dart';
+import 'package:frontend/screens/faq_screen.dart';
+import 'package:frontend/screens/fire_screen.dart';
+import 'package:frontend/screens/stats_screen.dart';
 import 'package:frontend/services/location.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
-import 'components/position.dart'; // Импортируем класс PositionHelper
+import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class HomepageScreen extends StatefulWidget {
   const HomepageScreen({super.key});
 
   @override
-  _HomepageScreenState createState() => _HomepageScreenState();
+  State<HomepageScreen> createState() => _HomepageScreenState();
 }
 
 class _HomepageScreenState extends State<HomepageScreen> {
+  late LocationService locationService;
+  Position? currentLocation;
+  int _selectedTabIndex = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
-      backgroundColor: Color(0xFF6568A4),
-      body: Contains(),
-    ));
+  late List<Widget> _tabs;
+
+  Future<int> getUserId(Position position) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    int? userId = prefs.getInt('user_id');
+
+    if (userId == null) {
+      final response = await http.post(
+        Uri.parse(registerRef),
+        body: jsonEncode({
+          'latitude': position.latitude,
+          'longitude': position.longitude,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 201) {
+        Map<String, dynamic> data = jsonDecode(response.body);
+        userId = data['id'];
+        await prefs.setInt('user_id', userId!);
+      } else {
+        throw Exception('Failed to register user.');
+      }
+    }
+
+    return userId;
   }
-}
-
-class Contains extends StatefulWidget {
-  const Contains({super.key});
-
-  @override
-  _ContainsState createState() => _ContainsState();
-}
-
-class _ContainsState extends State<Contains> {
-  GoogleMapController? _controller;
-  PositionHelper _positionHelper = PositionHelper();
-  LatLng _center = LatLng(51, 70);
 
   @override
   void initState() {
     super.initState();
-    _initDefaultLocation();
+    _initializeData();
   }
 
-  void _initDefaultLocation() async {
-    LocationData? locationData = await _positionHelper.getLocation();
-    if (locationData != null) {
-      setState(() {
-        _center = LatLng(locationData.latitude!, locationData.longitude!);
-      });
+  Future<void> _initializeData() async {
+    Position position = await Geolocator.getCurrentPosition();
+    int userId = await getUserId(position);
+    locationService = LocationService(userId);
+    locationService.startListening();
+
+    setState(() {
+      currentLocation = position;
+      _tabs = [
+        const StatsScreen(),
+        FireScreen(position: currentLocation!),
+        const FaqScreen(),
+      ];
+    });
+  }
+
+  @override
+  void dispose() {
+    locationService.stopListening();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (currentLocation == null) {
+      return const CircularProgressIndicator();
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    return Stack(
-      children: [
-        // Google Map as background
-        GoogleMap(
-          onMapCreated: (GoogleMapController controller) {
-            _controller = controller;
-          },
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 14,
-          ),
-        ),
-        // Bottom Bar
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            width: screenWidth,
-            height: 65,
-            decoration: BoxDecoration(color: Color(0xFF332C2C)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                IconButton(
-                  icon: Image.asset('assets/stats_icon.png'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => StatsScreen()),
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: Image.asset('assets/fire_icon.png'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FireScreen()),
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: Image.asset('assets/faq_icon.png'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FAQScreen()),
-                    );
-                  },
-                ),
-              ],
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: const Color(0xFF6568A4),
+        body: _tabs[_selectedTabIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedTabIndex,
+          onTap: _handleTabSelection,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.show_chart),
+              label: 'Stats',
             ),
-          ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.fireplace_sharp),
+              label: 'Fire',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.question_answer),
+              label: 'FAQ',
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
-}
 
-class StatsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Статистика")),
-      body: Center(child: Text("Экран статистики")),
-    );
-  }
-}
-
-class FireScreen extends StatelessWidget {
-  @override
-  
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Пожар")),
-      body: Center(child: Text("Экран пожара")),
-    );
-  }
-}
-
-class FAQScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("FAQ")),
-      body: Center(child: Text("Экран FAQ")),
-    );
+  void _handleTabSelection(int index) {
+    setState(() {
+      _selectedTabIndex = index;
+    });
   }
 }
