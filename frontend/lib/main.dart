@@ -25,8 +25,8 @@ class _MapScreenState extends State<MapScreen> {
   GoogleMapController? _controller;
   final TextEditingController _latitudeController = TextEditingController();
   final TextEditingController _longitudeController = TextEditingController();
-  LatLng _center = LatLng(0, 0); // Изначально устанавливаем 0, 0
   PositionHelper _positionHelper = PositionHelper(); // Создаем экземпляр PositionHelper
+  LatLng _center = LatLng(51, 70);   // Изначально устанавливаем 0, 0
 
   @override
   void initState() {
@@ -45,8 +45,7 @@ class _MapScreenState extends State<MapScreen> {
       });
     }
   }
-
-  void _updateLocation() async {
+void _updateLocation() async {
     LocationData? locationData = await _positionHelper.getLocation();
     if (locationData != null) {
       setState(() {
@@ -54,14 +53,7 @@ class _MapScreenState extends State<MapScreen> {
         _latitudeController.text = locationData.latitude.toString();
         _longitudeController.text = locationData.longitude.toString();
       });
-    }
-    
-    if (locationData != null) {
-      setState(() {
-        _center = LatLng(locationData.latitude!, locationData.longitude!);
-        _latitudeController.text = locationData.latitude.toString();
-        _longitudeController.text = locationData.longitude.toString();
-      });
+
       if (_controller != null) {
         _controller!.moveCamera(
           CameraUpdate.newCameraPosition(
@@ -70,7 +62,8 @@ class _MapScreenState extends State<MapScreen> {
         );
       }
     }
-  }
+}
+
 
   @override
   Widget build(BuildContext context) {
