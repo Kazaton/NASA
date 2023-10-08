@@ -6,6 +6,8 @@ class FireNotificationWidget extends StatefulWidget {
 
   @override
   State<FireNotificationWidget> createState() => _FireNotificationWidgetState();
+
+  void sendNotification() {}
 }
 
 class _FireNotificationWidgetState extends State<FireNotificationWidget> {

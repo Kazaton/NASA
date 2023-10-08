@@ -7,9 +7,11 @@ import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'homepage.dart';
 
 Future<void> main() async {
-  runApp(const Kazaton());
+  runApp(const HomepageScreen());
+  
 }
 
 class Kazaton extends StatefulWidget {
@@ -87,7 +89,7 @@ class _KazatonState extends State<Kazaton> {
                     ? 'Location: ${_locationData!.latitude}, ${_locationData!.longitude}'
                     : 'Press the button to get location',
               ),
-              const FireNotificationWidget(),
+              
             ],
           ),
         ),

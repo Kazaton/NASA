@@ -14,6 +14,8 @@ dependencies:
   geolocator: ^10.1.0
   shared_preferences: ^2.2.1
   http: ^1.1.0
+  google_maps_flutter: ^2.2.3
+  
 
 dev_dependencies:
   flutter_test:
@@ -22,3 +24,15 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/faq_icon.png
+    - assets/fire_icon.png
+    - assets/stats_icon.png
+    - assets/recent_wildfires.png
+    - assets/hectares_burned.png
+
+  fonts:
+    - family: Dela Gothic One
+      fonts:
+        - asset: assets/fonts/DelaGothicOne-Regular.ttf
