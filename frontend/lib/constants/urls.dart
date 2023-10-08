@@ -1,5 +1,5 @@
-const HOST = '192.168.0.16';
-const url = 'http://$HOST:8000';
+const host = '192.168.60.108';
+const url = 'http://$host:8000';
 
 const registerRef = '$url/register/';
 const updateUserRef = '$url/user/';

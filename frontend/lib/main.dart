@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:frontend/components/fire_alert.dart';
 import 'package:frontend/constants/urls.dart';
 import 'package:frontend/services/location.dart';
 import 'package:location/location.dart';
@@ -89,12 +88,10 @@ class _KazatonState extends State<Kazaton> {
                     ? 'Location: ${_locationData!.latitude}, ${_locationData!.longitude}'
                     : 'Press the button to get location',
               ),
-              
             ],
           ),
         ),
       ),
     );
   }
-
 }
